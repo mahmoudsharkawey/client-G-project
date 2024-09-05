@@ -1,9 +1,10 @@
+import ProductList from "../components/card"
 
 
 const CollectionPage = () => {
   return (
     <div>
-      CollectionPage
+      <ProductList />
     </div>
   )
 }
