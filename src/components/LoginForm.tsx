@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const LoginForm = () => {
   return (
     <>
@@ -38,12 +40,12 @@ const LoginForm = () => {
               </a>
             </div>
             <div className="flex items-center justify-between mb-4">
-              <a
-                href="/register"
+              <Link     
+                to="/register"
                 className="text-xs text-indigo-500 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
                 Create Account
-              </a>
+              </Link>
             </div>
             <button
               type="submit"

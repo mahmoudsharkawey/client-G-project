@@ -8,7 +8,7 @@ import RegisterPage from "./pages/RegisterPage";
 import CollectionPage from "./pages/CollectionPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
-import CategoriesPage from "./pages/CategoriesPage";
+import WhishListPage from "./pages/WhishListPage";
 
 function App() {
   return (
@@ -20,7 +20,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
           <Route path="/cart" element={<CartPage />} />
-          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/wishlist" element={<WhishListPage />} />
           <Route path="/collection" element={<CollectionPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />
