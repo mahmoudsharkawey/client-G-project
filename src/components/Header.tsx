@@ -2,6 +2,12 @@ import { useState } from "react";
 import { ShoppingBag, Heart } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 
+const isLoggedIn = ()=>{
+  const token = localStorage.getItem("token");
+  console.log(token);
+  return token ? true : false;
+};
+
 const EcommerceNavigation = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const toggleMobileMenu = () => setMobileMenuOpen(!mobileMenuOpen);
@@ -128,7 +134,7 @@ const EcommerceNavigation = () => {
                       Contact
                     </Link>
 
-                    <Link
+                    {!isLoggedIn() && <Link
                       to="/login"
                       className={`-m-2 block p-5 font-medium ${
                         isActive("/login")
@@ -138,7 +144,7 @@ const EcommerceNavigation = () => {
                       onClick={toggleMobileMenu}
                     >
                       Sign in
-                    </Link>
+                    </Link> }
                   </div>
                 </div>
               </div>
@@ -211,7 +217,7 @@ const EcommerceNavigation = () => {
 
             {/* Right side items */}
             <div className="flex items-center lg:flex-1 lg:justify-end">
-              <Link
+              {!isLoggedIn() ? <Link
                 to="/login"
                 className={`hidden lg:block text-sm font-medium ${
                   isActive("/login")
@@ -220,7 +226,7 @@ const EcommerceNavigation = () => {
                 }`}
               >
                 Sign in
-              </Link>
+              </Link> : <h1 className="text-sm font-black">{localStorage.getItem("name")}</h1>}
 
               {/* Wishlist icon with badge */}
               <div className="ml-4 flow-root lg:ml-6">

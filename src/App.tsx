@@ -11,6 +11,7 @@ import ContactPage from "./pages/ContactPage";
 import WhishListPage from "./pages/WhishListPage";
 
 function App() {
+
   return (
     <>
       <BrowserRouter>
