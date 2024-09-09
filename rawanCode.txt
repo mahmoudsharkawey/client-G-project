@@ -1,0 +1,128 @@
+  
+interface FormData {
+  email: string;
+  password: string;
+   firstName: string;
+   lastName: string;
+ }
+  
+  const emailRegex = /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/;
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@.#$!%*?&^])[A-Za-z\d@.#$!%*?&]{8,15}$/;
+
+  const validateEmail = (email: string) => emailRegex.test(email);
+  const validatePassword = (password: string) => passwordRegex.test(password);
+
+  const navigate = useNavigate();
+
+  const [errorMsg, setErrorMessage] = useState<string | null>(null);
+
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+    firstName: "",
+    lastName: "",
+  });
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const checkData = () => {
+    if (!validateEmail(formData.email)) {
+      setErrorMessage("Please enter a valid email address.");
+      return false;
+    } else if (!validatePassword(formData.password)) {
+      console.log(formData.password);
+      setErrorMessage(
+        "Password should: 1- has at least one lowercase letter and one uppercase letter. 2- has at least one digit. 3- has at least one special character. 4- must be at least 8 characters length."
+      );
+      return false;
+    } else if (
+      !formData.email ||
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.password
+    ) {
+      setErrorMessage("Please fill the empty fields.");
+      return false;
+    } else {
+      setErrorMessage(null);
+      return true;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (checkData()) {
+      try {
+        const response = await axios.post(
+          "http://localhost:3001/user/register",
+          formData
+        );
+        postMessage("Registration successful!");
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("name", response.data.name);
+        if (response.status == 200) {
+          navigate("/");
+        }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } catch (error: any) {
+        console.log(error.response.data);
+        if(error.response.data === "User already exists!")
+          setErrorMessage("This email is already registered, try to sign in, or enter another email.")
+        postMessage(error.response?.data || "Something went wrong");
+      }
+    }
+  };
+
+\\ login
+
+
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState<FormData>({
+    email: "",
+    password: "",
+  });
+
+  const [errorMsg, setErroMsg] = useState<string | null>(null);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/user/login",
+        formData
+      );
+      if (response.status === 200) {
+        localStorage.setItem("token", response.data.token);
+        localStorage.setItem("name", response.data.name);
+        navigate("/");
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.log(error.response?.data);
+      if(error.response?.data === "Incorrect email"){
+        setErroMsg("Invalid email, try again.");
+      }else if(error.response?.data === "Incorrect password!"){
+        setErroMsg("Invalid password, try again.");
+      }else{
+        setErroMsg(null);
+      }
+      postMessage(error.response?.data || "Something went wrong");
+    }
+  };

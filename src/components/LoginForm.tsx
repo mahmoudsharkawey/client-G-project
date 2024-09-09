@@ -1,96 +1,77 @@
-import axios from "axios";
-import React, { useState } from "react";
+// import axios from "axios";
+import React, { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-interface FormData {
-  email: string;
-  password: string;
-}
+import { useAuth } from "../context/Auth/AuthContext";
+import { BASE_URL } from "../../constants";
+import { toast } from "sonner";
 
 const LoginForm = () => {
+  const emailRef = useRef<HTMLInputElement>(null);
+  const passwordRef = useRef<HTMLInputElement>(null);
+
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState<FormData>({
-    email: "",
-    password: "",
-  });
+  const { login } = useAuth();
 
-  const [errorMsg, setErroMsg] = useState<string | null>(null);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    try {
-      const response = await axios.post(
-        "http://localhost:3001/user/login",
-        formData
-      );
-      if (response.status === 200) {
-        localStorage.setItem("token", response.data.token);
-        localStorage.setItem("name", response.data.name);
-        navigate("/");
-      }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (error: any) {
-      console.log(error.response?.data);
-      if(error.response?.data === "Incorrect email"){
-        setErroMsg("Invalid email, try again.");
-      }else if(error.response?.data === "Incorrect password!"){
-        setErroMsg("Invalid password, try again.");
-      }else{
-        setErroMsg(null);
-      }
-      postMessage(error.response?.data || "Something went wrong");
+    const email = emailRef.current?.value;
+    const password = passwordRef.current?.value;
+
+    // Validate the form data
+    if (!email || !password) {
+      toast.error("Check submitted data.");
+      return;
     }
+
+    // Make the call to API to create the user
+    const response = await fetch(`${BASE_URL}/user/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    if (!response.ok) {
+      toast.error("Unable to register user");
+      return;
+    }
+
+    const token = await response.json();
+
+    if (!token) {
+      toast.error("Incorrect token");
+      return;
+    }
+
+    login(email, token);
+    toast.success("Login successful!");
+    navigate("/");
   };
 
   return (
     <>
-      <div className="mt-28  flex items-center justify-center w-full ">
+      <div className="mt-28 flex items-center justify-center w-full">
         <div className="bg-white shadow-md rounded-lg px-8 py-6 max-w-full">
-          <h1 className="text-2xl font-bold text-center mb-4 ">
-            Welcome Back!
-          </h1>
+          <h1 className="text-2xl font-bold text-center mb-4">Welcome Back!</h1>
 
-          {errorMsg && (
-            <div
-              className="flex items-center p-4 mb-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800"
-              role="alert"
-            >
-              <svg
-                className="flex-shrink-0 inline w-4 h-4 me-3"
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-              >
-                <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-              </svg>
-              <span className="sr-only">Info</span>
-              <div>{errorMsg}</div>
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
+          <form onSubmit={onSubmit}>
             <div className="mb-4">
-              <label className="block text-sm font-medium text-gray-700 ">
+              <label className="block text-sm font-medium text-gray-700">
                 Email Address
               </label>
               <input
+                ref={emailRef}
                 name="email"
                 type="email"
                 id="email"
                 className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="your@email.com"
-                onChange={handleChange}
                 required
               />
             </div>
@@ -100,12 +81,12 @@ const LoginForm = () => {
                 Password
               </label>
               <input
+                ref={passwordRef}
                 name="password"
                 type="password"
                 id="password"
                 className="shadow-sm rounded-md w-full px-3 py-2 border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
                 placeholder="Enter your password"
-                onChange={handleChange}
                 required
               />
               <a
@@ -115,7 +96,7 @@ const LoginForm = () => {
                 Forgot Password?
               </a>
             </div>
-            
+
             <div className="flex items-center justify-between mb-4">
               <Link
                 to="/register"
