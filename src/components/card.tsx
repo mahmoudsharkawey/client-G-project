@@ -60,7 +60,7 @@ const ProductCard: React.FC<{ product: Product }> = ({
       {/* Price and Discount */}
       <p className="text-sm font-semibold text-gray-900 px-2 mb-8">
         ${finalPrice.toFixed(2)}{" "}
-        {discount && <span className="line-through text-red-500   ml-2">${price.toFixed(2)}</span>}
+        {discount ? <span className="line-through text-red-500   ml-2">${price.toFixed(2)}</span> : ''}
       </p>
       
       <button 
