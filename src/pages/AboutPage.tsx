@@ -4,7 +4,7 @@ const AboutPage = () => {
   return (
     <>
       <section id="about" className="m-auto w-3/4 mb-20 mt-20">
-        <h1 className="text-5xl font-bold text-center mb-12">About Us</h1>
+        <h1 className="text-4xl text-center font-bold text-indigo-900 m-6">About Us</h1>
         <div className="container mx-auto flex flex-col md:flex-row items-center space-x-0 md:space-x-14 space-y-10 md:space-y-0">
           <div className="md:w-1/2 bg-blue-900 pb-10 rounded-md">
             <img

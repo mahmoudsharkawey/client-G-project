@@ -4,7 +4,7 @@ const testimonialsSection = () => {
       id="testimonials"
       className="m-auto w-3/4 mt-10 py-16 px-2"
     >
-      <h2 className="text-center text-4xl font-bold tracking-tight text-gray-900 sm:text-5xl">
+      <h2 className="text-4xl text-center font-bold text-indigo-900 m-6">
         Read trusted reviews from our customers
       </h2>
       <div className="mx-auto max-w-screen-xl px-4 py-12 sm:px-6 lg:px-8 lg:py-16">
