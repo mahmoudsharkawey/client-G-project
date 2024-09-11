@@ -48,7 +48,7 @@ const LoginForm = () => {
       toast.error("Incorrect token");
       return;
     }
-
+    
     login(email, token);
     toast.success("Login successful!");
     navigate("/");

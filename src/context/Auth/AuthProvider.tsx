@@ -20,7 +20,7 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     setEmail(email);
     setToken(token);
     localStorage.setItem(Email_KEY, email);
-    localStorage.setItem(TOKEN_KEY, JSON.stringify(token));
+    localStorage.setItem(TOKEN_KEY, token);
   };
 
   const logout = () => {

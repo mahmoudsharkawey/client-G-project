@@ -5,35 +5,24 @@ import {
   User,
   LogOut,
   Package,
-  Smartphone,
-  ShirtIcon,
-  Home,
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Auth/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "../context/Cart/CartContext";
 
 const getUserName = () => {
-  const tokenObj = localStorage.getItem("token");
-  if (tokenObj) {
+  const email = localStorage.getItem("email");
+  if (email) {
     try {
-      const { name } = JSON.parse(tokenObj);
-      return name || "User"; // Fallback to 'User' if name is not present
+      const name = email.split('@')[0]; // Get the part before @
+      return name.charAt(0).toUpperCase() + name.slice(1); // Capitalize the first letter
     } catch (error) {
-      console.error("Error parsing token:", error);
+      console.error("Error parsing email:", error);
     }
   }
   return "User";
 };
-
-const categories = [
-  { name: "Electronics", icon: Smartphone, path: "/categories/electronics" },
-  { name: "Clothing", icon: ShirtIcon, path: "/categories/clothing" },
-  { name: "Home Decor", icon: Home, path: "/categories/home-decor" },
-  // Add more categories as needed
-
-  // Add more categories as needed
-];
 
 const EcommerceNavigation = () => {
   const { isAuthenticated, logout } = useAuth();
@@ -43,25 +32,13 @@ const EcommerceNavigation = () => {
   const location = useLocation();
   const userName = getUserName();
   const isActive = (path: string) => location.pathname === path;
-  //   const [showDropdown, setShowDropdown] = useState(false);
-  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
   const [showUserDropdown, setShowUserDropdown] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const categoryDropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
-  const [mobileExpandedCategory, setMobileExpandedCategory] = useState<
-    string | null
-  >(null);
+  const { cartItems } = useCart();
 
-  const toggleMobileCategoryExpansion = (categoryName: string) => {
-    setMobileExpandedCategory((prev) =>
-      prev === categoryName ? null : categoryName
-    );
-  };
-
-  const toggleCategoryDropdown = useCallback(() => {
-    setShowCategoryDropdown((prev) => !prev);
-  }, []);
+  // Calculate total items in cart
+  const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   const toggleUserDropdown = useCallback(() => {
     setShowUserDropdown((prev) => !prev);
@@ -74,12 +51,6 @@ const EcommerceNavigation = () => {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         // setShowDropdown(false);
-      }
-      if (
-        categoryDropdownRef.current &&
-        !categoryDropdownRef.current.contains(event.target as Node)
-      ) {
-        setShowCategoryDropdown(false);
       }
       if (
         userDropdownRef.current &&
@@ -193,66 +164,6 @@ const EcommerceNavigation = () => {
                       >
                         Home
                       </Link>
-                      <div className="py-2">
-                        <button
-                          onClick={() => toggleMobileCategoryExpansion("main")}
-                          className={`flex items-center justify-between w-full -m-2 p-2 font-medium ${
-                            mobileExpandedCategory === "main"
-                              ? "text-[#4f46e5]"
-                              : "text-gray-900 hover:text-[#4f46e5]"
-                          }`}
-                        >
-                          Categories
-                          <motion.svg
-                            animate={{
-                              rotate:
-                                mobileExpandedCategory === "main" ? 180 : 0,
-                            }}
-                            transition={{ duration: 0.3 }}
-                            className="h-5 w-5"
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 20 20"
-                            fill="currentColor"
-                          >
-                            <path
-                              fillRule="evenodd"
-                              d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                              clipRule="evenodd"
-                            />
-                          </motion.svg>
-                        </button>
-                        <AnimatePresence>
-                          {mobileExpandedCategory === "main" && (
-                            <motion.div
-                              initial="hidden"
-                              animate="visible"
-                              exit="hidden"
-                              variants={dropdownVariants}
-                              className="mt-2 space-y-2"
-                            >
-                              {categories.map((category) => (
-                                <motion.div
-                                  key={category.name}
-                                  initial={{ opacity: 0, x: -20 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ duration: 0.3 }}
-                                >
-                                  <Link
-                                    to={category.path}
-                                    className="flex items-center p-2 -m-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                                    onClick={toggleMobileMenu}
-                                  >
-                                    <category.icon className="w-5 h-5 mr-3 text-gray-500" />
-                                    <span className="text-sm font-medium">
-                                      {category.name}
-                                    </span>
-                                  </Link>
-                                </motion.div>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
                       <Link
                         to="/collection"
                         className={`-m-2 block p-5 font-medium ${
@@ -355,50 +266,6 @@ const EcommerceNavigation = () => {
             {/* Centered links */}
             <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center">
               <div className="flex space-x-8">
-                <div className="relative" ref={categoryDropdownRef}>
-                  <div
-                    className={`flex items-center text-sm font-medium cursor-pointer ${
-                      isActive("/categories") || showCategoryDropdown
-                        ? "text-[#4f46e5]"
-                        : "text-gray-700 hover:text-[#4f46e5]"
-                    }`}
-                    onClick={toggleCategoryDropdown}
-                  >
-                    Categories
-                  </div>
-                  <AnimatePresence>
-                    {showCategoryDropdown && (
-                      <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        exit="hidden"
-                        variants={dropdownVariants}
-                        className="absolute left-0 mt-2 w-auto bg-white rounded-md shadow-lg py-2 z-10"
-                      >
-                        <div className="flex space-x-4 px-4">
-                          {categories.map((category) => (
-                            <motion.div
-                              key={category.name}
-                              initial={{ opacity: 0, y: -10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.3 }}
-                            >
-                              <Link
-                                to={category.path}
-                                className="flex flex-col items-center p-2 text-gray-700 hover:bg-gray-100 rounded-md"
-                              >
-                                <category.icon className="w-8 h-8 mb-1 text-gray-500" />
-                                <span className="text-xs font-medium text-center">
-                                  {category.name}
-                                </span>
-                              </Link>
-                            </motion.div>
-                          ))}
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
                 <Link
                   to="/collection"
                   className={`flex items-center text-sm font-medium ${
@@ -507,13 +374,13 @@ const EcommerceNavigation = () => {
               <div className="ml-4 flow-root lg:ml-6">
                 <Link to="/cart" className="group -m-2 flex items-center p-2">
                   <span className="text-sm font-medium">Cart</span>
-                  <div className="relative  ml-2">
+                  <div className="relative ml-2">
                     <ShoppingBag
                       className="h-6 w-6 flex-shrink-0 text-gray-400 group-hover:text-gray-500"
                       aria-hidden="true"
                     />
                     <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-indigo-600 text-[10px] font-medium text-white flex items-center justify-center">
-                      0
+                      {totalItemsInCart}
                     </span>
                   </div>
                   <span className="sr-only">items in cart, view bag</span>

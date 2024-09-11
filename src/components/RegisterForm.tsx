@@ -50,7 +50,7 @@ const RegisterForm: React.FC = () => {
 
     login(email, token);
     toast.success("Registration successful!");
-    navigate("/login");
+    navigate("/");
   };
 
   return (
