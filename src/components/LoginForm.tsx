@@ -1,16 +1,13 @@
-// import axios from "axios";
-import React, { useRef } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useRef } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { toast } from "sonner";
 import { useAuth } from "../context/Auth/AuthContext";
 import { BASE_URL } from "../../constants";
-import { toast } from "sonner";
 
 const LoginForm = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-
   const navigate = useNavigate();
-
   const { login } = useAuth();
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {

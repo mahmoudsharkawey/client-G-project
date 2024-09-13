@@ -9,7 +9,6 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
   const { token } = useAuth();
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [totalAmount, setTotalAmount] = useState<number>(0);
-
   useEffect(() => {
     if (!token) {
       return;
@@ -45,7 +44,7 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
           unitPrice,
         })
       );
-    
+
       setCartItems(cartItemsMapped);
       setTotalAmount(cart.totalAmount);
     };
@@ -76,14 +75,21 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
       if (!cart) {
         toast.error("Failed to parse cart data");
       }
-
       const cartItemsMapped = cart.items.map(
-        ({ product, quantity }: { product: any; quantity: number }) => ({
+        ({
+          product,
+          quantity,
+          unitPrice,
+        }: {
+          product: any;
+          quantity: number;
+          unitPrice: number;
+        }) => ({
           productId: product._id,
           title: product.title,
           image: product.image,
           quantity,
-          unitPrice: product.unitPrice,
+          unitPrice: unitPrice || product.price, // Use unitPrice from cart item, fallback to product price
         })
       );
 
@@ -215,14 +221,72 @@ const CartProvider: FC<PropsWithChildren> = ({ children }) => {
     }
   };
 
+  const addItemToWishlist = async (productId: number) => {
+    try {
+      const response = await fetch(`${BASE_URL}/wishlist/items`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          productId,
+        }),
+      });
+
+
+      if (!response.ok) {
+        toast.error("Failed to add to wishlist");
+      }
+
+      const wishlist = await response.json();
+
+      if (!wishlist) {
+        toast.error("Failed to parse wishlist data");
+      }
+
+      toast.success("Added to wishlist successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const removeItemInWishlist = async (productId: string) => {
+    try {
+      console.log("Removing item from wishlist:", productId);
+      const response = await fetch(`${BASE_URL}/wishlist/items/${productId}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        toast.error("Failed to delete from wishlist");
+      }
+
+      const wishlist = await response.json();
+
+      if (!wishlist) {
+        toast.error("Failed to parse wishlist data");
+      }
+
+      toast.success("Removed item successfully");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <CartContext.Provider
       value={{
         cartItems,
         totalAmount,
+        addItemToWishlist,
         addItemToCart,
         updateItemInCart,
         removeItemInCart,
+        removeItemInWishlist,
         clearCart,
       }}
     >

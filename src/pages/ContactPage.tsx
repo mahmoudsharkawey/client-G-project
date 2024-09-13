@@ -1,7 +1,7 @@
 const ContactPage = () => {
   return (
     <>
-      <h1 className="text-4xl text-center font-bold text-indigo-900 m-6">Contact Page</h1>
+      <h1 className="text-4xl text-center font-bold text-indigo-900 mt-14">Contact Us</h1>
       <div className="contact-page container m-auto w-3/4 px-4 py-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="left-column space-y-8">
           <section className="information-about-us">
@@ -108,7 +108,7 @@ const ContactPage = () => {
 
           <div className="illustration">
             <img
-              src="https://unblast.com/wp-content/uploads/2020/09/Contact-Us-Vector-Illustration-Part-02-1-1024x768.jpg"
+              src="https://hekto.miladsdgh.ir/static/media/contact-us.0d516f999757fd73d180.png"
               alt="Contact illustration"
               width={500}
               height={400}

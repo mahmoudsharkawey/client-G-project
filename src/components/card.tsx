@@ -21,7 +21,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const { addItemToCart } = useCart();
+  const { addItemToCart, addItemToWishlist } = useCart();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -49,6 +49,7 @@ const ProductCard: React.FC<{ product: Product }> = ({ product }) => {
             className="absolute top-2 right-2 p-2 bg-white bg-opacity-70 rounded-full transition-all duration-150 ease-in-out active:scale-90"
             onClick={() => {
               setIsLiked(!isLiked);
+              addItemToWishlist(product._id);
             }}
           >
             <svg

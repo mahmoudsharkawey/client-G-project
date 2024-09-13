@@ -1,21 +1,16 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import {
-  ShoppingBag,
-  Heart,
-  User,
-  LogOut,
-  Package,
-} from "lucide-react";
+import { ShoppingBag, Heart, User, LogOut, Package } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/Auth/AuthContext";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCart } from "../context/Cart/CartContext";
+import { BASE_URL } from "../../constants";
 
 const getUserName = () => {
   const email = localStorage.getItem("email");
   if (email) {
     try {
-      const name = email.split('@')[0]; // Get the part before @
+      const name = email.split("@")[0]; // Get the part before @
       return name.charAt(0).toUpperCase() + name.slice(1); // Capitalize the first letter
     } catch (error) {
       console.error("Error parsing email:", error);
@@ -36,9 +31,32 @@ const EcommerceNavigation = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
   const userDropdownRef = useRef<HTMLDivElement>(null);
   const { cartItems } = useCart();
+  const [myWhishlist, setMyWhishlist] = useState<{ items: any[] }>({
+    items: [],
+  });
+  const { token } = useAuth();
+
+  const getMyWhishlist = async () => {
+    const response = await fetch(`${BASE_URL}/wishlist`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) return;
+    const data = await response.json();
+    setMyWhishlist(data);
+  };
+
+  useEffect(() => {
+    getMyWhishlist();
+  }, [myWhishlist]);
 
   // Calculate total items in cart
-  const totalItemsInCart = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const totalItemsInCart = cartItems.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   const toggleUserDropdown = useCallback(() => {
     setShowUserDropdown((prev) => !prev);
@@ -120,11 +138,7 @@ const EcommerceNavigation = () => {
                 <div className="flex items-center justify-between px-4 pt-5 pb-2">
                   <Link to="/" onClick={toggleMobileMenu}>
                     <span className="sr-only">Your Company</span>
-                    <img
-                      className="h-8 w-auto"
-                      src="https://th.bing.com/th/id/OIP.ByAsL5GlaSkeGpjgow2sBQHaHa?rs=1&pid=ImgDetMain"
-                      alt="Company logo"
-                    />
+                    <h1 className="text-2xl font-bold text-indigo-900">Divo</h1>
                   </Link>
                   <button
                     type="button"
@@ -211,7 +225,7 @@ const EcommerceNavigation = () => {
                             </span>
                           </div>
                           <Link
-                            to="/orders"
+                            to="/my-orders"
                             className="flex items-center -m-2 p-2 font-medium text-gray-900"
                             onClick={toggleMobileMenu}
                           >
@@ -255,17 +269,23 @@ const EcommerceNavigation = () => {
             <div className="flex lg:flex-1">
               <Link to="/">
                 <span className="sr-only">Your Company</span>
-                <img
-                  className="h-8 w-auto"
-                  src="https://th.bing.com/th/id/OIP.ByAsL5GlaSkeGpjgow2sBQHaHa?rs=1&pid=ImgDetMain"
-                  alt="Company logo"
-                />
-              </Link>
+                <h1 className="text-2xl font-bold text-indigo-900">Divo</h1>
+                </Link>
             </div>
 
             {/* Centered links */}
-            <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-center">
+            <div className="hidden lg:flex lg:flex-1 lg:items-center lg:justify-start">
               <div className="flex space-x-8">
+                <Link
+                  to="/"
+                  className={`flex items-center text-sm font-medium ${
+                    isActive("/")
+                      ? "text-[#4f46e5]"
+                      : "text-gray-700 hover:text-[#4f46e5]"
+                  }`}
+                >
+                  Home
+                </Link>
                 <Link
                   to="/collection"
                   className={`flex items-center text-sm font-medium ${
@@ -322,7 +342,7 @@ const EcommerceNavigation = () => {
                           className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10"
                         >
                           <Link
-                            to="/orders"
+                            to="/my-orders"
                             className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                           >
                             <Package className="mr-2" size={18} />
@@ -363,7 +383,7 @@ const EcommerceNavigation = () => {
                       aria-hidden="true"
                     />
                     <span className="absolute -top-2 -right-2 h-4 w-4 rounded-full bg-indigo-600 text-[10px] font-medium text-white flex items-center justify-center">
-                      0
+                      {myWhishlist.items.length}
                     </span>
                   </div>
                   <span className="sr-only">View wishlist</span>

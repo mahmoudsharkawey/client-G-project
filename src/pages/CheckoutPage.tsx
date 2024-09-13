@@ -1,9 +1,9 @@
+import Checkout from "../components/Checkout"
 
 const CheckoutPage = () => {
   return (
     <div>
-      CheckoutPage
-      CheckoutPage
+      <Checkout/>
     </div>
   )
 }

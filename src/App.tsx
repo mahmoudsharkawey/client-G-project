@@ -15,6 +15,7 @@ import { Toaster } from "sonner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckoutPage from "./pages/CheckoutPage";
 import CartProvider from "./context/Cart/CartProvider";
+import OrderSuccessPage from "./pages/OderSuccessPage";``
 
 function App() {
   return (
@@ -32,13 +33,14 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="/cart" element={<CartPage />} />
                 <Route path="/checkout" element={<CheckoutPage />} />
-                <Route path="/orders" element={<OrdersPage />} />
+                <Route path="/my-orders" element={<OrdersPage />} />
+                <Route path="/order-success" element={<OrderSuccessPage />} />
               </Route>
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
             </Routes>
             <Toaster
-              position="top-center"
+              position="bottom-center"
               toastOptions={
                 {
                   style: {

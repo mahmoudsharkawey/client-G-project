@@ -1,9 +1,11 @@
 import { FC, PropsWithChildren, useState } from "react";
 import { AuthContext } from "./AuthContext";
 import { toast } from "sonner";
+import { BASE_URL } from "../../../constants";
 
 const Email_KEY = "email";
 const TOKEN_KEY = "token";
+
 
 const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [email, setEmail] = useState<string | null>(
@@ -13,6 +15,8 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
   const [token, setToken] = useState<string | null>(
     localStorage.getItem(TOKEN_KEY)
   );
+
+  const [myOrders, setMyOrders] = useState<any[]>([]);
 
   const isAuthenticated = !!token;
 
@@ -31,9 +35,34 @@ const AuthProvider: FC<PropsWithChildren> = ({ children }) => {
     toast.success("Logged out successfully");
   };
 
+  const getMyOrders = async () => {
+    const response = await fetch(`${BASE_URL}/user/my-orders`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) return;
+
+    const data = await response.json();
+
+    setMyOrders(data);
+    console.log(data);
+  };
+
+
   return (
     <AuthContext.Provider
-      value={{ email, token, isAuthenticated, login, logout }}
+      value={{
+        email,
+        token,
+        myOrders,
+        isAuthenticated,
+        login,
+        logout,
+        getMyOrders,
+      }}
     >
       {children}
     </AuthContext.Provider>

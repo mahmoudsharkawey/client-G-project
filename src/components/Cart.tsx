@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { useCart } from "../context/Cart/CartContext";
 import { toast } from "sonner";
 
@@ -21,6 +22,7 @@ const Cart = () => {
   };
 
   const handleQuantityChange = (productId: string, quantity: number) => {
+    if (quantity < 1) return;
     updateItemInCart(productId, quantity);
   };
 
@@ -38,6 +40,7 @@ const Cart = () => {
             <div className="mt-8">
               <ul className="space-y-4">
                 {cartItems.map((item, index) => (
+                    
                   <li key={item.productId} className="flex items-center gap-4">
                     <img
                       src={item.image}
@@ -52,7 +55,11 @@ const Cart = () => {
                         <div>
                           <dt className="inline">Price:</dt>
                           <dd className="inline">
-                            ${item.unitPrice.toFixed(2)}
+                            $
+                            {item.unitPrice != null ||
+                            item.unitPrice != undefined
+                              ? item.unitPrice.toFixed(2)
+                              : "0.00"}
                           </dd>
                         </div>
                       </dl>
@@ -61,7 +68,12 @@ const Cart = () => {
                     <div className="flex items-center justify-center mr-4 gap-2">
                       <button
                         className="h-8 w-8 rounded border border-gray-200 bg-gray-50 text-gray-600 transition hover:bg-gray-100"
-                        onClick={() => handleQuantityChange(item.productId, item.quantity - 1)}
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.productId,
+                            item.quantity - 1
+                          )
+                        }
                       >
                         -
                       </button>
@@ -71,13 +83,21 @@ const Cart = () => {
                         value={item.quantity}
                         id={`Line${index + 1}Qty`}
                         onChange={(e) =>
-                          handleQuantityChange(item.productId, parseInt(e.target.value))
+                          handleQuantityChange(
+                            item.productId,
+                            parseInt(e.target.value)
+                          )
                         }
                         className="h-8 w-12 rounded border-gray-200 bg-gray-50 p-0 text-center text-xs text-gray-600 [-moz-appearance:_textfield] focus:outline-none [&::-webkit-inner-spin-button]:m-0 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:m-0 [&::-webkit-outer-spin-button]:appearance-none"
                       />
                       <button
                         className="h-8 w-8 rounded border border-gray-200 bg-gray-50 text-gray-600 transition hover:bg-gray-100"
-                        onClick={() => handleQuantityChange(item.productId, item.quantity + 1)}
+                        onClick={() =>
+                          handleQuantityChange(
+                            item.productId,
+                            item.quantity + 1
+                          )
+                        }
                       >
                         +
                       </button>
@@ -120,16 +140,19 @@ const Cart = () => {
                   <dl className="space-y-0.5 text-sm text-gray-700">
                     <div className="flex justify-end !text-base font-medium">
                       <dt className="mr-2">Total:</dt>
-                      <dd>${totalAmount.toFixed(2)}</dd>
+                      <dd>
+                        ${totalAmount ? totalAmount.toFixed(2) : "0.00"}
+                      </dd>{" "}
+                      {/* Updated line */}
                     </div>
                   </dl>
 
-                  <a
-                    href="#"
+                  <Link
+                    to="/checkout"
                     className="mt-4 inline-block rounded bg-gray-700 px-5 py-3 text-sm text-gray-100 transition hover:bg-gray-600"
                   >
                     Checkout
-                  </a>
+                  </Link>
                 </div>
               </div>
             </div>
