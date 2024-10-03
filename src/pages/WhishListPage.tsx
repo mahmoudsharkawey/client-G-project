@@ -91,6 +91,8 @@ const WhishListPage = () => {
                       Add to Cart
                     </button>
                     <button
+                    type="button"
+                    aria-label="Delete from Wishlist"
                       onClick={() => handleDeleteFromWishlist(item.product._id)} // New delete function
                       className="mt-2 ml-2 p-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300"
                     >
