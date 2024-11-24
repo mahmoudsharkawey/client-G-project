@@ -1,7 +1,7 @@
 import React from "react";
 
 const TrendySection: React.FC = () => {
-  return (
+  return (  
     <section className="flex items-center justify-center py-10 bg-purple-100 mt-52">
       <div className="flex flex-col md:flex-row max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
         <div className="md:w-1/2">

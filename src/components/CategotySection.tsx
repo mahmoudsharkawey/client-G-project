@@ -20,6 +20,8 @@ const CategorySection = () => {
     };
     fetchCategories();
   }, []);
+
+    // Jsx
   return (
     <section className="m-auto w-full sm:w-3/4 py-5"> 
       <h2 className="text-3xl sm:text-4xl text-center font-bold text-indigo-900 mb-6"> 

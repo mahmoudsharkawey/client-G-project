@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useState, useRef, useEffect, useCallback } from "react";
 import { ShoppingBag, Heart, User, LogOut, Package } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -50,6 +51,7 @@ const EcommerceNavigation = () => {
 
   useEffect(() => {
     getMyWhishlist();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myWhishlist]);
 
   // Calculate total items in cart
@@ -138,7 +140,7 @@ const EcommerceNavigation = () => {
                 <div className="flex items-center justify-between px-4 pt-5 pb-2">
                   <Link to="/" onClick={toggleMobileMenu}>
                     <span className="sr-only">Your Company</span>
-                    <h1 className="text-2xl font-bold text-indigo-900">Divo</h1>
+                    <h1 className="text-2xl font-bold text-indigo-900">Damietta</h1>
                   </Link>
                   <button
                     type="button"
@@ -269,7 +271,7 @@ const EcommerceNavigation = () => {
             <div className="flex lg:flex-1">
               <Link to="/">
                 <span className="sr-only">Your Company</span>
-                <h1 className="text-2xl font-bold text-indigo-900">Divo</h1>
+                <h1 className="text-2xl font-bold text-indigo-900">Damietta</h1>
                 </Link>
             </div>
 

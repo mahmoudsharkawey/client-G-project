@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { FC, PropsWithChildren, useEffect, useState } from "react";
 import { CartContext } from "./CartContext";
 import { CartItem } from "../../types/CartItem";

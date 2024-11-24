@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -15,7 +16,7 @@ import { Toaster } from "sonner";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CheckoutPage from "./pages/CheckoutPage";
 import CartProvider from "./context/Cart/CartProvider";
-import OrderSuccessPage from "./pages/OderSuccessPage";``
+import OrderSuccessPage from "./pages/OderSuccessPage";
 
 function App() {
   return (
